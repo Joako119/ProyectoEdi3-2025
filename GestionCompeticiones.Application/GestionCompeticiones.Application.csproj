@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\GestionCompeticiones.Abstractions\GestionCompeticiones.Abstractions.csproj" />
+    <ProjectReference Include="..\GestionCompeticiones.Repository\GestionCompeticiones.Repository.csproj" />
+  </ItemGroup>
+
 </Project>

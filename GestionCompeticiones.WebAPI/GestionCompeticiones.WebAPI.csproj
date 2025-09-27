@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -23,6 +23,13 @@
     <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="8.2.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     <PackageReference Include="System.Security.Permissions" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\GestionCompeticiones.Application\GestionCompeticiones.Application.csproj" />
+    <ProjectReference Include="..\GestionCompeticiones.DataAccess\GestionCompeticiones.DataAccess.csproj" />
+    <ProjectReference Include="..\GestionCompeticiones.Entities\GestionCompeticiones.Entities.csproj" />
+    <ProjectReference Include="..\GestionCompeticiones.Services\GestionCompeticiones.Services.csproj" />
   </ItemGroup>
 
 </Project>
