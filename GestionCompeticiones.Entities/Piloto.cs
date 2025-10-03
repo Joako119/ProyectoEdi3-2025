@@ -19,7 +19,7 @@ namespace GestionCompeticiones.Entities
         //public string LicenciaNumero { get; set; }
 
         public ICollection<PilotoEquipo> HistorialEquipos { get; set; }
-        public ICollection<ParticipacionCampeonato> Campeonatos { get; set; }
+        public ICollection<Campeonato> Campeonatos { get; set; }
         public ICollection<ResultadoCarrera> Resultados { get; set; }
         public ICollection<EstadisticaPiloto> Estadisticas { get; set; }
     }

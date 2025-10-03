@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GestionCompeticiones.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,7 +19,7 @@ namespace GestionCompeticiones.Entities
         public Categoria Categoria { get; set; }
 
         public ICollection<Carrera> Carreras { get; set; }
-        public ICollection<ParticipacionCampeonato> Participantes { get; set; }
+        public ICollection<Piloto> Pilotos { get; set; }
         public ICollection<TablaPosiciones> TablaGeneral { get; set; }
     }
 }

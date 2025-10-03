@@ -21,6 +21,6 @@ namespace GestionCompeticiones.Entities
         public ICollection<ResultadoCarrera> Resultados { get; set; } = new List<ResultadoCarrera>();
 
         // Lista de personas asignadas a la carrera (fiscales, veedores, administrativos, etc.)
-        public ICollection<AsignacionFiscalCarrera> Fiscales { get; set; } = new List<AsignacionFiscalCarrera>();
+        public ICollection<AsignacionPersonalFiscalCarrera> Fiscales { get; set; } = new List<AsignacionPersonalFiscalCarrera>();
     }
 }

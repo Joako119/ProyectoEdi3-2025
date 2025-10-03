@@ -20,6 +20,6 @@ namespace GestionCompeticiones.Entities
         public bool Activo { get; set; }
 
   
-        public ICollection<AsignacionFiscalCarrera> Asignaciones { get; set; } = new List<AsignacionFiscalCarrera>();
+        public ICollection<AsignacionPersonalFiscalCarrera> Asignaciones { get; set; } = new List<AsignacionPersonalFiscalCarrera>();
     }
 }
