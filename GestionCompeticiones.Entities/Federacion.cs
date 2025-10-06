@@ -19,6 +19,6 @@ namespace GestionCompeticiones.Entities
         public string Telefono { get; set; }
         public bool Activa { get; set; }
 
-        public ICollection<PersonalFederacion> Personal { get; set; } = new List<PersonalFederacion>();
+        public virtual ICollection<PersonalFederacion> Personal { get; set; } = new List<PersonalFederacion>();
     }
 }

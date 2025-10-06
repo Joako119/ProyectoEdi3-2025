@@ -26,15 +26,16 @@ namespace GestionCompeticiones.WebAPI
             builder.Services.AddDbContext<DbDataAccess>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
-                        o => o.MigrationsAssembly("GestionCompeticiones.WebApi"));
+                    o => o.MigrationsAssembly("GestionCompeticiones.WebAPI"));
                 options.UseLazyLoadingProxies();
             });
 
-          
+
+
             builder.Services.AddScoped(typeof(IStringServices), typeof(StringServices));
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             builder.Services.AddScoped(typeof(IApplication<>), typeof(Application<>));
-            builder.Services.AddScoped(typeof(IDbContext<>), typeof(DbContext<>));
+            builder.Services.AddScoped(typeof(IDbContext<>), typeof(ApplicationDbContext<>));
 
 
             var app = builder.Build();

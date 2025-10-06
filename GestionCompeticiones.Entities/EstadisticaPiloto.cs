@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,10 +9,14 @@ namespace GestionCompeticiones.Entities
 {
     public class EstadisticaPiloto
     {
-        public int Id { get; set; }
-        public int PilotoId { get; set; }
-        public Piloto Piloto { get; set; }
+        public EstadisticaPiloto() { }
 
+        public int Id { get; set; }
+
+        [ForeignKey(nameof(Piloto))]
+        public int PilotoId { get; set; }
+
+        public virtual Piloto Piloto { get; set; } 
         public int Temporada { get; set; }
         public string Categoria { get; set; }
 

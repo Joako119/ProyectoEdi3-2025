@@ -1,4 +1,5 @@
 ﻿using GestionCompeticiones.Entities;
+using GestionCompeticiones.Entities.GestionCompeticiones.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -25,6 +26,14 @@ namespace GestionCompeticiones.DataAccess
         public virtual DbSet<Campeonato> Campeonato { get; set; }
         public virtual DbSet<AsignacionPersonalFiscalCarrera> AsignacionPersonalFiscalCarrera { get; set; }
         public DbDataAccess(DbContextOptions<DbDataAccess> options) : base(options) { }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) => optionsBuilder.LogTo(Console.WriteLine).EnableDetailedErrors();
+       
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=GestionCompeticionesDev;Trusted_Connection=True;");
+            }
+            optionsBuilder.LogTo(Console.WriteLine).EnableDetailedErrors();
+        }
     }
 }

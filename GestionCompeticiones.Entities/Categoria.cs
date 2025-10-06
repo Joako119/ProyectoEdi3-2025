@@ -1,5 +1,7 @@
-﻿using System;
+﻿using GestionCompeticiones.Entities.GestionCompeticiones.Entities;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,18 +10,21 @@ namespace GestionCompeticiones.Entities
 {
     public class Categoria
     {
+       
         public Categoria()
         {
             Campeonatos = new HashSet<Campeonato>();
         }
 
         public int Id { get; set; }
-        public string Nombre { get; set; } //  turismo pista
-        public string Descripcion { get; set; } //  peso minimo 1800kg 
+        public string Nombre { get; set; }
+        public string Descripcion { get; set; }
 
+        [ForeignKey(nameof(UsuarioResponsable))]
         public int UsuarioResponsableId { get; set; }
-        public Usuario UsuarioResponsable { get; set; }
+        public virtual Usuario UsuarioResponsable { get; set; } // virtual para proxies
 
-        public ICollection<Campeonato> Campeonatos { get; set; }
+        public virtual ICollection<Campeonato> Campeonatos { get; set; } // virtual para proxies
+
     }
 }

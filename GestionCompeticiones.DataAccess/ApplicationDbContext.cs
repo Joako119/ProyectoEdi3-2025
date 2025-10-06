@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 namespace GestionCompeticiones.DataAccess
 {
 
-    public class DbContext<T> : IDbContext<T> where T : class, IEntidad
+    public class ApplicationDbContext<T> : IDbContext<T> where T : class, IEntidad
     {
         DbSet<T> _Items;
         DbDataAccess _ctx;
-        public DbContext(DbDataAccess ctx)
+        public ApplicationDbContext(DbDataAccess ctx)
         {
             _ctx = ctx;
             _Items = _ctx.Set<T>();
