@@ -8,6 +8,10 @@ namespace GestionCompeticiones.Entities
 {
     public class Equipo
     {
+        public Equipo()
+        {
+            Pilotos = new HashSet<PilotoEquipo>();
+        }
         public int Id { get; set; }
         public string Nombre { get; set; }
         public string Pais { get; set; }

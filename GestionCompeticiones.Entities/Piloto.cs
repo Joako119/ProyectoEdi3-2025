@@ -8,6 +8,13 @@ namespace GestionCompeticiones.Entities
 {
     public class Piloto
     {
+        public Piloto()
+        {
+            HistorialEquipos = new HashSet<PilotoEquipo>();
+            Campeonatos = new HashSet<Campeonato>();
+            Resultados = new HashSet<ResultadoCarrera>();
+            Estadisticas = new HashSet<EstadisticaPiloto>();
+        }
         public int Id { get; set; }
         public int UsuarioId { get; set; }
         public Usuario Usuario { get; set; }

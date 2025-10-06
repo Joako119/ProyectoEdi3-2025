@@ -11,6 +11,11 @@ namespace GestionCompeticiones.Entities
 {
     public class Usuario
     {
+        public Usuario()
+        {
+            CategoriasResponsables = new HashSet<Categoria>();
+        }
+
         public int Id { get; set; }
         [StringLength(40)]
         public string Nombre { get; set; }
@@ -28,8 +33,8 @@ namespace GestionCompeticiones.Entities
 
 
 
-
-      
+       
+       
 
 
     }

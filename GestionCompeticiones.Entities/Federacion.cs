@@ -8,7 +8,10 @@ namespace GestionCompeticiones.Entities
 {
     public class Federacion
     {
-
+        public Federacion()
+        {
+            Personal = new HashSet<PersonalFederacion>();
+        }
         public int Id { get; set; }
         public string Nombre { get; set; }
         public string Pais { get; set; }

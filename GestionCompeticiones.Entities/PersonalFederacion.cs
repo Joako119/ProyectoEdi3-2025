@@ -8,6 +8,10 @@ namespace GestionCompeticiones.Entities
 {
     public class PersonalFederacion
     {
+        public PersonalFederacion()
+        {
+            Asignaciones = new HashSet<AsignacionPersonalFiscalCarrera>();
+        }
         public int Id { get; set; }
         public int FederacionId { get; set; }
         public Federacion Federacion { get; set; }
