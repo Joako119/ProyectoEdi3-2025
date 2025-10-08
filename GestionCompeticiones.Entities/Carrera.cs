@@ -1,4 +1,5 @@
-﻿using GestionCompeticiones.Entities.GestionCompeticiones.Entities;
+﻿using GestionCompeticiones.Abstractions;
+using GestionCompeticiones.Entities.GestionCompeticiones.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace GestionCompeticiones.Entities
 {
-    public class Carrera
+    public class Carrera : IEntidad
     {
      
             public Carrera()

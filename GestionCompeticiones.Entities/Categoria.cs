@@ -1,4 +1,5 @@
-﻿using GestionCompeticiones.Entities.GestionCompeticiones.Entities;
+﻿using GestionCompeticiones.Abstractions;
+using GestionCompeticiones.Entities.GestionCompeticiones.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace GestionCompeticiones.Entities
 {
-    public class Categoria
+    public class Categoria : IEntidad
     {
-       
-        public Categoria()
+
+       public Categoria()
         {
             Campeonatos = new HashSet<Campeonato>();
         }
@@ -22,9 +23,10 @@ namespace GestionCompeticiones.Entities
 
         [ForeignKey(nameof(UsuarioResponsable))]
         public int UsuarioResponsableId { get; set; }
-        public virtual Usuario UsuarioResponsable { get; set; } // virtual para proxies
+        public virtual Usuario UsuarioResponsable { get; set; }
 
-        public virtual ICollection<Campeonato> Campeonatos { get; set; } // virtual para proxies
+        public virtual ICollection<Campeonato> Campeonatos { get; set; }
+    
 
     }
 }

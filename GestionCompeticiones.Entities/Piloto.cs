@@ -1,4 +1,5 @@
-﻿using GestionCompeticiones.Entities.GestionCompeticiones.Entities;
+﻿using GestionCompeticiones.Abstractions;
+using GestionCompeticiones.Entities.GestionCompeticiones.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,22 +9,14 @@ using System.Threading.Tasks;
 
 namespace GestionCompeticiones.Entities
 {
-    public class Piloto
+    public class Piloto : IEntidad
     {
-       
-            public Piloto()
-            {
-                HistorialEquipos = new HashSet<PilotoEquipo>();
-                Campeonatos = new HashSet<Campeonato>();
-                Resultados = new HashSet<ResultadoCarrera>();
-                Estadisticas = new HashSet<EstadisticaPiloto>();
-            }
+            public Piloto() { }
 
             public int Id { get; set; }
 
             [ForeignKey(nameof(Usuario))]
-            public int UsuarioId { get; set; }
-
+            public int UsuarioId { get; set; } 
             public virtual Usuario Usuario { get; set; } 
 
             public string DNI { get; set; }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GestionCompeticiones.Abstractions;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace GestionCompeticiones.Entities
 {
-    public class PersonalFederacion
+    public class PersonalFederacion : IEntidad
     {
 
             public PersonalFederacion()
