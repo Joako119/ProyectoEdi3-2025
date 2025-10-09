@@ -1,5 +1,4 @@
 ﻿using GestionCompeticiones.Abstractions;
-using GestionCompeticiones.Entities.GestionCompeticiones.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -11,9 +10,16 @@ namespace GestionCompeticiones.Entities
 {
     public class Piloto : IEntidad
     {
-            public Piloto() { }
+        public Piloto()
+        {
+            HistorialEquipos = new HashSet<PilotoEquipo>();
+            Campeonatos = new HashSet<Campeonato>();
+            Estadisticas = new HashSet<EstadisticaPiloto>();
+            Resultados = new HashSet<ResultadoCarrera>();
+            TablaPosiciones = new HashSet<TablaPosiciones> ();
+        }
 
-            public int Id { get; set; }
+        public int Id { get; set; }
 
             [ForeignKey(nameof(Usuario))]
             public int UsuarioId { get; set; } 
@@ -24,9 +30,14 @@ namespace GestionCompeticiones.Entities
             public string Nacionalidad { get; set; }
             public string FotoPerfil { get; set; }
 
-            public virtual ICollection<PilotoEquipo> HistorialEquipos { get; set; }
-            public virtual ICollection<Campeonato> Campeonatos { get; set; }
+        public int LicenciaNumero { get; set; }
+
+        public virtual ICollection<PilotoEquipo> HistorialEquipos { get; set; }
+
+        public virtual ICollection<Campeonato> Campeonatos { get; set; }
             public virtual ICollection<ResultadoCarrera> Resultados { get; set; }
             public virtual ICollection<EstadisticaPiloto> Estadisticas { get; set; }
+            public virtual ICollection<TablaPosiciones> TablaPosiciones { get; set; } // FIX: Agregar propiedad faltante
+     
     }
 }

@@ -9,17 +9,14 @@ namespace GestionCompeticiones.Entities
 {
     public class Equipo : IEntidad
     {
-            public Equipo()
-            {
-                Pilotos = new HashSet<PilotoEquipo>();
-            }
+        public Equipo() { Pilotos = new HashSet<PilotoEquipo>(); }
 
-            public int Id { get; set; }
+        public int Id { get; set; }
             public string Nombre { get; set; }
             public string Pais { get; set; }
             public string Logo { get; set; }
             public DateTime FechaCreacion { get; set; }
 
-            public virtual ICollection<PilotoEquipo> Pilotos { get; set; }
-        }
+        public virtual ICollection<PilotoEquipo> Pilotos { get; set; }
+    }
 }

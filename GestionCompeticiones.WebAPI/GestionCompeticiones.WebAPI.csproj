@@ -32,8 +32,4 @@
     <ProjectReference Include="..\GestionCompeticiones.Services\GestionCompeticiones.Services.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
 </Project>

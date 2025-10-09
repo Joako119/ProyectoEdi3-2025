@@ -10,20 +10,17 @@ namespace GestionCompeticiones.Entities
 {
     public class PilotoEquipo : IEntidad
     {
-       
-            public PilotoEquipo() { }
+        public PilotoEquipo() { }
 
-            public int Id { get; set; }
+        public int Id { get; set; }
 
-        [ForeignKey(nameof(Piloto))]
         public int PilotoId { get; set; }
         public virtual Piloto Piloto { get; set; }
 
-        [ForeignKey(nameof(Equipo))]
         public int EquipoId { get; set; }
         public virtual Equipo Equipo { get; set; }
 
         public DateTime FechaInicio { get; set; }
-            public DateTime? FechaFin { get; set; }
-        }
+        public DateTime? FechaFin { get; set; }
+    }
     }

@@ -1,5 +1,4 @@
 ﻿using GestionCompeticiones.Abstractions;
-using GestionCompeticiones.Entities.GestionCompeticiones.Entities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;

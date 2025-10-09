@@ -11,7 +11,9 @@ namespace GestionCompeticiones.Entities
 {
     public class AsignacionPersonalFiscalCarrera : IEntidad
     {
-        public AsignacionPersonalFiscalCarrera() { }
+        public AsignacionPersonalFiscalCarrera() 
+        {
+        }
 
         public int Id { get; set; }
 

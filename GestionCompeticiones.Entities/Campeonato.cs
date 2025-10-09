@@ -2,13 +2,16 @@
 using GestionCompeticiones.Enums;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace GestionCompeticiones.Entities
-{
     namespace GestionCompeticiones.Entities
     {
         public class Campeonato : IEntidad
         {
-            public Campeonato() { }
+            public Campeonato()
+            {
+                Carreras = new HashSet<Carrera>();
+                Pilotos = new HashSet<Piloto>();
+                TablaGeneral = new HashSet<TablaPosiciones>();
+            }
 
             public int Id { get; set; }
 
@@ -34,4 +37,4 @@ namespace GestionCompeticiones.Entities
             public virtual ICollection<TablaPosiciones> TablaGeneral { get; set; } 
         }
     }
-}
+

@@ -35,7 +35,7 @@ namespace GestionCompeticiones.WebAPI
             builder.Services.AddScoped(typeof(IStringServices), typeof(StringServices));
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             builder.Services.AddScoped(typeof(IApplication<>), typeof(Application<>));
-            builder.Services.AddScoped(typeof(IDbContext<>), typeof(ApplicationDbContext<>));
+            builder.Services.AddScoped(typeof(IDbContext<>), typeof(DbContext<>));
 
 
             var app = builder.Build();
