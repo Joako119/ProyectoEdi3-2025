@@ -1,4 +1,6 @@
-﻿using GestionCompeticiones.Application;
+﻿using AutoMapper;
+using GestionCompeticiones.Application;
+using GestionCompeticiones.Application.Dtos.Usuario;
 using GestionCompeticiones.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,64 +10,69 @@ namespace GestionCompeticiones.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsuariosController : ControllerBase
+    public class UsuarioController : ControllerBase
     {
-        private readonly ILogger<UsuariosController> _logger;
-        private readonly IApplication<Usuario> _usuarioApp;
+        private readonly ILogger<UsuarioController> _logger;
+        private readonly IApplication<Usuario> _service;
+        private readonly IMapper _mapper;
 
-        public UsuariosController(ILogger<UsuariosController> logger, IApplication<Usuario> usuarioApp)
+        public UsuarioController(
+            ILogger<UsuarioController> logger,
+            IApplication<Usuario> service,
+            IMapper mapper)
         {
             _logger = logger;
-            _usuarioApp = usuarioApp;
+            _service = service;
+            _mapper = mapper;
         }
 
-        [HttpGet("All")]
-        public IActionResult All() => Ok(_usuarioApp.GetAll());
-
-        [HttpGet("ById")]
-        public IActionResult ById(int? id)
+        [HttpGet]
+        [Route("All")]
+        public async Task<IActionResult> All()
         {
-            if (!id.HasValue) return BadRequest();
-            var usuario = _usuarioApp.GetById(id.Value);
-            if (usuario is null) return NotFound();
-            return Ok(usuario);
+            return Ok(_mapper.Map<IList<UsuarioResponseDto>>(_service.GetAll()));
+        }
+
+        [HttpGet]
+        [Route("ById")]
+        public async Task<IActionResult> ById(int? Id)
+        {
+            if (!Id.HasValue) return BadRequest();
+            Usuario entity = _service.GetById(Id.Value);
+            if (entity is null) return NotFound();
+            return Ok(_mapper.Map<UsuarioResponseDto>(entity));
         }
 
         [HttpPost]
-        public IActionResult Crear(Usuario usuario)
+        public async Task<IActionResult> Crear(UsuarioRequestDto requestDto)
         {
             if (!ModelState.IsValid) return BadRequest();
-            _usuarioApp.Save(usuario);
-            return Ok(usuario.Id);
+            var entity = _mapper.Map<Usuario>(requestDto);
+            _service.Save(entity);
+            return Ok(entity.Id);
         }
 
         [HttpPut]
-        public IActionResult Editar(int? id, Usuario usuario)
+        public async Task<IActionResult> Editar(int? Id, UsuarioRequestDto requestDto)
         {
-            if (!id.HasValue || !ModelState.IsValid) return BadRequest();
-            var back = _usuarioApp.GetById(id.Value);
-            if (back is null) return NotFound();
-
-            back.Nombre = usuario.Nombre;
-            back.Apellido = usuario.Apellido;
-            back.Email = usuario.Email;
-            back.Contraseña = usuario.Contraseña;
-            back.Rol = usuario.Rol;
-            back.Activo = usuario.Activo;
-
-            _usuarioApp.Save(back);
-            return Ok(back);
+            if (!Id.HasValue) return BadRequest();
+            if (!ModelState.IsValid) return BadRequest();
+            Usuario entityBack = _service.GetById(Id.Value);
+            if (entityBack is null) return NotFound();
+            entityBack = _mapper.Map<Usuario>(requestDto);
+            _service.Save(entityBack);
+            return Ok();
         }
 
         [HttpDelete]
-        public IActionResult Borrar(int? id)
+        public async Task<IActionResult> Borrar(int? Id)
         {
-            if (!id.HasValue || !ModelState.IsValid) return BadRequest();
-            var back = _usuarioApp.GetById(id.Value);
-            if (back is null) return NotFound();
-            _usuarioApp.Delete(back.Id);
+            if (!Id.HasValue) return BadRequest();
+            if (!ModelState.IsValid) return BadRequest();
+            Usuario entityBack = _service.GetById(Id.Value);
+            if (entityBack is null) return NotFound();
+            _service.Delete(entityBack.Id);
             return Ok();
-
         }
     }
 }

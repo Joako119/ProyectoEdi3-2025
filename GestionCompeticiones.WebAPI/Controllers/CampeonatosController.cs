@@ -1,4 +1,6 @@
-﻿using GestionCompeticiones.Application;
+﻿using AutoMapper;
+using GestionCompeticiones.Application;
+using GestionCompeticiones.Application.Dtos.Campeonato;
 using GestionCompeticiones.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,59 +12,65 @@ namespace GestionCompeticiones.WebAPI.Controllers
     public class CampeonatosController : ControllerBase
     {
         private readonly ILogger<CampeonatosController> _logger;
-        private readonly IApplication<Campeonato> _campeonatoApp;
+        private readonly IApplication<Campeonato> _service;
+        private readonly IMapper _mapper;
 
-        public CampeonatosController(ILogger<CampeonatosController> logger, IApplication<Campeonato> campeonatoApp)
+        public CampeonatosController(
+            ILogger<CampeonatosController> logger,
+            IApplication<Campeonato> service,
+            IMapper mapper)
         {
             _logger = logger;
-            _campeonatoApp = campeonatoApp;
+            _service = service;
+            _mapper = mapper;
         }
 
-        [HttpGet("All")]
-        public IActionResult All() => Ok(_campeonatoApp.GetAll());
-
-        [HttpGet("ById")]
-        public IActionResult ById(int? id)
+        [HttpGet]
+        [Route("All")]
+        public async Task<IActionResult> All()
         {
-            if (!id.HasValue) return BadRequest();
-            var campeonato = _campeonatoApp.GetById(id.Value);
-            if (campeonato is null) return NotFound();
-            return Ok(campeonato);
+            return Ok(_mapper.Map<IList<CampeonatoResponseDto>>(_service.GetAll()));
+        }
+
+        [HttpGet]
+        [Route("ById")]
+        public async Task<IActionResult> ById(int? Id)
+        {
+            if (!Id.HasValue) return BadRequest();
+            Campeonato comp = _service.GetById(Id.Value);
+            if (comp is null) return NotFound();
+            return Ok(_mapper.Map<CampeonatoResponseDto>(comp));
         }
 
         [HttpPost]
-        public IActionResult Crear(Campeonato campeonato)
+        public async Task<IActionResult> Crear(CampeonatoRequestDto requestDto)
         {
             if (!ModelState.IsValid) return BadRequest();
-            _campeonatoApp.Save(campeonato);
-            return Ok(campeonato.Id);
+            var comp = _mapper.Map<Campeonato>(requestDto);
+            _service.Save(comp);
+            return Ok(comp.Id);
         }
 
         [HttpPut]
-        public IActionResult Editar(int? id, Campeonato campeonato)
+        public async Task<IActionResult> Editar(int? Id, CampeonatoRequestDto requestDto)
         {
-            if (!id.HasValue || !ModelState.IsValid) return BadRequest();
-            var back = _campeonatoApp.GetById(id.Value);
-            if (back is null) return NotFound();
-
-            back.Nombre = campeonato.Nombre;
-            back.Año = campeonato.Año;
-            back.ReglasPuntaje = campeonato.ReglasPuntaje;
-            back.Estado = campeonato.Estado;
-            back.CategoriaId = campeonato.CategoriaId;
-            back.UsuarioResponsableId = campeonato.UsuarioResponsableId;
-
-            _campeonatoApp.Save(back);
-            return Ok(back);
+            if (!Id.HasValue) return BadRequest();
+            if (!ModelState.IsValid) return BadRequest();
+            Campeonato compBack = _service.GetById(Id.Value);
+            if (compBack is null) return NotFound();
+            compBack = _mapper.Map<Campeonato>(requestDto);
+            _service.Save(compBack);
+            return Ok();
         }
 
         [HttpDelete]
-        public IActionResult Borrar(int? id)
+        public async Task<IActionResult> Borrar(int? Id)
         {
-            if (!id.HasValue || !ModelState.IsValid) return BadRequest();
-            var back = _campeonatoApp.GetById(id.Value);
-            if (back is null) return NotFound();
-            _campeonatoApp.Delete(back.Id);
+            if (!Id.HasValue) return BadRequest();
+            if (!ModelState.IsValid) return BadRequest();
+            Campeonato compBack = _service.GetById(Id.Value);
+            if (compBack is null) return NotFound();
+            _service.Delete(compBack.Id);
             return Ok();
         }
     }

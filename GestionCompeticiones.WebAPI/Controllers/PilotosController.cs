@@ -1,72 +1,77 @@
-﻿using GestionCompeticiones.Application;
+﻿using AutoMapper;
+using GestionCompeticiones.Application;
+using GestionCompeticiones.Application.Dtos.Piloto;
 using GestionCompeticiones.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionCompeticiones.WebAPI.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
-    public class PilotosController : ControllerBase
+    public class PilotoController : ControllerBase
     {
-        private readonly ILogger<PilotosController> _logger;
-        private readonly IApplication<Piloto> _pilotoApp;
+        private readonly ILogger<PilotoController> _logger;
+        private readonly IApplication<Piloto> _service;
+        private readonly IMapper _mapper;
 
-        public PilotosController(ILogger<PilotosController> logger, IApplication<Piloto> pilotoApp)
+        public PilotoController(
+            ILogger<PilotoController> logger,
+            IApplication<Piloto> service,
+            IMapper mapper)
         {
             _logger = logger;
-            _pilotoApp = pilotoApp;
+            _service = service;
+            _mapper = mapper;
         }
 
         [HttpGet]
         [Route("All")]
         public async Task<IActionResult> All()
         {
-            return Ok(_pilotoApp.GetAll());
+            return Ok(_mapper.Map<IList<PilotoResponseDto>>(_service.GetAll()));
         }
 
         [HttpGet]
         [Route("ById")]
-        public async Task<IActionResult> ById(int? id)
+        public async Task<IActionResult> ById(int? Id)
         {
-            if (!id.HasValue) return BadRequest();
-            var piloto = _pilotoApp.GetById(id.Value);
-            if (piloto is null) return NotFound();
-            return Ok(piloto);
+            if (!Id.HasValue) return BadRequest();
+            Piloto entity = _service.GetById(Id.Value);
+            if (entity is null) return NotFound();
+            return Ok(_mapper.Map<PilotoResponseDto>(entity));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Crear(Piloto piloto)
+        public async Task<IActionResult> Crear(PilotoRequestDto requestDto)
         {
             if (!ModelState.IsValid) return BadRequest();
-            _pilotoApp.Save(piloto);
-            return Ok(piloto.Id);
+            var entity = _mapper.Map<Piloto>(requestDto);
+            _service.Save(entity);
+            return Ok(entity.Id);
         }
 
         [HttpPut]
-        public async Task<IActionResult> Editar(int? id, Piloto piloto)
+        public async Task<IActionResult> Editar(int? Id, PilotoRequestDto requestDto)
         {
-            if (!id.HasValue || !ModelState.IsValid) return BadRequest();
-            var pilotoBack = _pilotoApp.GetById(id.Value);
-            if (pilotoBack is null) return NotFound();
-
-            pilotoBack.DNI = piloto.DNI;
-            pilotoBack.FechaNacimiento = piloto.FechaNacimiento;
-            pilotoBack.Nacionalidad = piloto.Nacionalidad;
-            pilotoBack.FotoPerfil = piloto.FotoPerfil;
-            pilotoBack.LicenciaNumero = piloto.LicenciaNumero;
-
-            _pilotoApp.Save(pilotoBack);
-            return Ok(pilotoBack);
+            if (!Id.HasValue) return BadRequest();
+            if (!ModelState.IsValid) return BadRequest();
+            Piloto entityBack = _service.GetById(Id.Value);
+            if (entityBack is null) return NotFound();
+            entityBack = _mapper.Map<Piloto>(requestDto);
+            _service.Save(entityBack);
+            return Ok();
         }
 
         [HttpDelete]
-        public async Task<IActionResult> Borrar(int? id)
+        public async Task<IActionResult> Borrar(int? Id)
         {
-            if (!id.HasValue || !ModelState.IsValid) return BadRequest();
-            var pilotoBack = _pilotoApp.GetById(id.Value);
-            if (pilotoBack is null) return NotFound();
-            _pilotoApp.Delete(pilotoBack.Id);
+            if (!Id.HasValue) return BadRequest();
+            if (!ModelState.IsValid) return BadRequest();
+            Piloto entityBack = _service.GetById(Id.Value);
+            if (entityBack is null) return NotFound();
+            _service.Delete(entityBack.Id);
             return Ok();
         }
     }

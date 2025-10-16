@@ -1,4 +1,6 @@
-﻿using GestionCompeticiones.Application;
+﻿using AutoMapper;
+using GestionCompeticiones.Application;
+using GestionCompeticiones.Application.Dtos.Carrera;
 using GestionCompeticiones.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,63 +9,70 @@ namespace GestionCompeticiones.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CarrerasController : ControllerBase
+    public class CarreraController : ControllerBase
     {
-        private readonly ILogger<CarrerasController> _logger;
-        private readonly IApplication<Carrera> _carreraApp;
+        private readonly ILogger<CarreraController> _logger;
+        private readonly IApplication<Carrera> _service;
+        private readonly IMapper _mapper;
 
-        public CarrerasController(ILogger<CarrerasController> logger, IApplication<Carrera> carreraApp)
+        public CarreraController(
+            ILogger<CarreraController> logger,
+            IApplication<Carrera> service,
+            IMapper mapper)
         {
             _logger = logger;
-            _carreraApp = carreraApp;
+            _service = service;
+            _mapper = mapper;
         }
 
-        [HttpGet("All")]
-        public IActionResult All() => Ok(_carreraApp.GetAll());
-
-        [HttpGet("ById")]
-        public IActionResult ById(int? id)
+        [HttpGet]
+        [Route("All")]
+        public async Task<IActionResult> All()
         {
-            if (!id.HasValue) return BadRequest();
-            var carrera = _carreraApp.GetById(id.Value);
-            if (carrera is null) return NotFound();
-            return Ok(carrera);
+            return Ok(_mapper.Map<IList<CarreraResponseDto>>(_service.GetAll()));
+        }
+
+        [HttpGet]
+        [Route("ById")]
+        public async Task<IActionResult> ById(int? Id)
+        {
+            if (!Id.HasValue) return BadRequest();
+            Carrera entity = _service.GetById(Id.Value);
+            if (entity is null) return NotFound();
+            return Ok(_mapper.Map<CarreraResponseDto>(entity));
         }
 
         [HttpPost]
-        public IActionResult Crear(Carrera carrera)
+        public async Task<IActionResult> Crear(CarreraRequestDto requestDto)
         {
             if (!ModelState.IsValid) return BadRequest();
-            _carreraApp.Save(carrera);
-            return Ok(carrera.Id);
+            var entity = _mapper.Map<Carrera>(requestDto);
+            _service.Save(entity);
+            return Ok(entity.Id);
         }
 
         [HttpPut]
-        public IActionResult Editar(int? id, Carrera carrera)
+        public async Task<IActionResult> Editar(int? Id, CarreraRequestDto requestDto)
         {
-            if (!id.HasValue || !ModelState.IsValid) return BadRequest();
-            var back = _carreraApp.GetById(id.Value);
-            if (back is null) return NotFound();
-
-            back.Nombre = carrera.Nombre;
-            back.Fecha = carrera.Fecha;
-            back.Ubicacion = carrera.Ubicacion;
-            back.Resultados = carrera.Resultados;
-            back.CampeonatoId = carrera.CampeonatoId;
-            back.Campeonato=carrera.Campeonato;
-            back.CampeonatoId = carrera.CampeonatoId;
-            _carreraApp.Save(back);
-            return Ok(back);
+            if (!Id.HasValue) return BadRequest();
+            if (!ModelState.IsValid) return BadRequest();
+            Carrera entityBack = _service.GetById(Id.Value);
+            if (entityBack is null) return NotFound();
+            entityBack = _mapper.Map<Carrera>(requestDto);
+            _service.Save(entityBack);
+            return Ok();
         }
 
         [HttpDelete]
-        public IActionResult Borrar(int? id)
+        public async Task<IActionResult> Borrar(int? Id)
         {
-            if (!id.HasValue || !ModelState.IsValid) return BadRequest();
-            var back = _carreraApp.GetById(id.Value);
-            if (back is null) return NotFound();
-            _carreraApp.Delete(back.Id);
+            if (!Id.HasValue) return BadRequest();
+            if (!ModelState.IsValid) return BadRequest();
+            Carrera entityBack = _service.GetById(Id.Value);
+            if (entityBack is null) return NotFound();
+            _service.Delete(entityBack.Id);
             return Ok();
         }
+
     }
 }

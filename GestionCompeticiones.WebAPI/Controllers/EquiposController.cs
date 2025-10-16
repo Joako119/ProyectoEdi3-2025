@@ -1,4 +1,6 @@
-﻿using GestionCompeticiones.Application;
+﻿using AutoMapper;
+using GestionCompeticiones.Application;
+using GestionCompeticiones.Application.Dtos.Equipo;
 using GestionCompeticiones.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -7,60 +9,68 @@ namespace GestionCompeticiones.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class EquiposController : ControllerBase
+    public class EquipoController : ControllerBase
     {
-        private readonly ILogger<EquiposController> _logger;
-        private readonly IApplication<Equipo> _equipoApp;
+        private readonly ILogger<EquipoController> _logger;
+        private readonly IApplication<Equipo> _service;
+        private readonly IMapper _mapper;
 
-        public EquiposController(ILogger<EquiposController> logger, IApplication<Equipo> equipoApp)
+        public EquipoController(
+            ILogger<EquipoController> logger,
+            IApplication<Equipo> service,
+            IMapper mapper)
         {
             _logger = logger;
-            _equipoApp = equipoApp;
+            _service = service;
+            _mapper = mapper;
         }
 
-        [HttpGet("All")]
-        public IActionResult All() => Ok(_equipoApp.GetAll());
-
-        [HttpGet("ById")]
-        public IActionResult ById(int? id)
+        [HttpGet]
+        [Route("All")]
+        public async Task<IActionResult> All()
         {
-            if (!id.HasValue) return BadRequest();
-            var equipo = _equipoApp.GetById(id.Value);
-            if (equipo is null) return NotFound();
-            return Ok(equipo);
+            return Ok(_mapper.Map<IList<EquipoResponseDto>>(_service.GetAll()));
+        }
+
+        [HttpGet]
+        [Route("ById")]
+        public async Task<IActionResult> ById(int? Id)
+        {
+            if (!Id.HasValue) return BadRequest();
+            Equipo entity = _service.GetById(Id.Value);
+            if (entity is null) return NotFound();
+            return Ok(_mapper.Map<EquipoResponseDto>(entity));
         }
 
         [HttpPost]
-        public IActionResult Crear(Equipo equipo)
+        public async Task<IActionResult> Crear(EquipoRequestDto requestDto)
         {
             if (!ModelState.IsValid) return BadRequest();
-            _equipoApp.Save(equipo);
-            return Ok(equipo.Id);
+            var entity = _mapper.Map<Equipo>(requestDto);
+            _service.Save(entity);
+            return Ok(entity.Id);
         }
 
         [HttpPut]
-        public IActionResult Editar(int? id, Equipo equipo)
+        public async Task<IActionResult> Editar(int? Id, EquipoRequestDto requestDto)
         {
-            if (!id.HasValue || !ModelState.IsValid) return BadRequest();
-            var back = _equipoApp.GetById(id.Value);
-            if (back is null) return NotFound();
-
-            back.Nombre = equipo.Nombre;
-            back.Pais = equipo.Pais;
-            back.Logo = equipo.Logo;
-            back.FechaCreacion = equipo.FechaCreacion;
-
-            _equipoApp.Save(back);
-            return Ok(back);
+            if (!Id.HasValue) return BadRequest();
+            if (!ModelState.IsValid) return BadRequest();
+            Equipo entityBack = _service.GetById(Id.Value);
+            if (entityBack is null) return NotFound();
+            entityBack = _mapper.Map<Equipo>(requestDto);
+            _service.Save(entityBack);
+            return Ok();
         }
 
         [HttpDelete]
-        public IActionResult Borrar(int? id)
+        public async Task<IActionResult> Borrar(int? Id)
         {
-            if (!id.HasValue || !ModelState.IsValid) return BadRequest();
-            var back = _equipoApp.GetById(id.Value);
-            if (back is null) return NotFound();
-            _equipoApp.Delete(back.Id);
+            if (!Id.HasValue) return BadRequest();
+            if (!ModelState.IsValid) return BadRequest();
+            Equipo entityBack = _service.GetById(Id.Value);
+            if (entityBack is null) return NotFound();
+            _service.Delete(entityBack.Id);
             return Ok();
         }
     }

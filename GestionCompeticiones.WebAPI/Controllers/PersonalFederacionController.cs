@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using GestionCompeticiones.Application;
-using GestionCompeticiones.Application.Dtos.Federacion;
+using GestionCompeticiones.Application.Dtos.PersonalFederacion;
 using GestionCompeticiones.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,15 +9,15 @@ namespace GestionCompeticiones.WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FederacionController : ControllerBase
+    public class PersonalFederacionController : ControllerBase
     {
-        private readonly ILogger<FederacionController> _logger;
-        private readonly IApplication<Federacion> _service;
+        private readonly ILogger<PersonalFederacionController> _logger;
+        private readonly IApplication<PersonalFederacion> _service;
         private readonly IMapper _mapper;
 
-        public FederacionController(
-            ILogger<FederacionController> logger,
-            IApplication<Federacion> service,
+        public PersonalFederacionController(
+            ILogger<PersonalFederacionController> logger,
+            IApplication<PersonalFederacion> service,
             IMapper mapper)
         {
             _logger = logger;
@@ -29,7 +29,7 @@ namespace GestionCompeticiones.WebAPI.Controllers
         [Route("All")]
         public async Task<IActionResult> All()
         {
-            return Ok(_mapper.Map<IList<FederacionResponseDto>>(_service.GetAll()));
+            return Ok(_mapper.Map<IList<PersonalFederacionResponseDto>>(_service.GetAll()));
         }
 
         [HttpGet]
@@ -37,28 +37,28 @@ namespace GestionCompeticiones.WebAPI.Controllers
         public async Task<IActionResult> ById(int? Id)
         {
             if (!Id.HasValue) return BadRequest();
-            Federacion entity = _service.GetById(Id.Value);
+            PersonalFederacion entity = _service.GetById(Id.Value);
             if (entity is null) return NotFound();
-            return Ok(_mapper.Map<FederacionResponseDto>(entity));
+            return Ok(_mapper.Map<PersonalFederacionResponseDto>(entity));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Crear(FederacionRequestDto requestDto)
+        public async Task<IActionResult> Crear(PersonalFederacionRequestDto requestDto)
         {
             if (!ModelState.IsValid) return BadRequest();
-            var entity = _mapper.Map<Federacion>(requestDto);
+            var entity = _mapper.Map<PersonalFederacion>(requestDto);
             _service.Save(entity);
             return Ok(entity.Id);
         }
 
         [HttpPut]
-        public async Task<IActionResult> Editar(int? Id, FederacionRequestDto requestDto)
+        public async Task<IActionResult> Editar(int? Id, PersonalFederacionRequestDto requestDto)
         {
             if (!Id.HasValue) return BadRequest();
             if (!ModelState.IsValid) return BadRequest();
-            Federacion entityBack = _service.GetById(Id.Value);
+            PersonalFederacion entityBack = _service.GetById(Id.Value);
             if (entityBack is null) return NotFound();
-            entityBack = _mapper.Map<Federacion>(requestDto);
+            entityBack = _mapper.Map<PersonalFederacion>(requestDto);
             _service.Save(entityBack);
             return Ok();
         }
@@ -68,7 +68,7 @@ namespace GestionCompeticiones.WebAPI.Controllers
         {
             if (!Id.HasValue) return BadRequest();
             if (!ModelState.IsValid) return BadRequest();
-            Federacion entityBack = _service.GetById(Id.Value);
+            PersonalFederacion entityBack = _service.GetById(Id.Value);
             if (entityBack is null) return NotFound();
             _service.Delete(entityBack.Id);
             return Ok();
