@@ -14,33 +14,33 @@ namespace GestionCompeticiones.WebAPI
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-
+            // ?? Servicios base
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-
+            // ??? Configuración de DbContext
             builder.Services.AddDbContext<DbDataAccess>(options =>
             {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
-                    o => o.MigrationsAssembly("GestionCompeticiones.WebAPI"));
+                options.UseSqlServer(
+                    builder.Configuration.GetConnectionString("DefaultConnection"),
+                    sql => sql.MigrationsAssembly("GestionCompeticiones.WebAPI")
+                );
                 options.UseLazyLoadingProxies();
             });
 
+            // ?? Registro de AutoMapper
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-
+            // ?? Registro de dependencias genéricas
             builder.Services.AddScoped(typeof(IStringServices), typeof(StringServices));
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             builder.Services.AddScoped(typeof(IApplication<>), typeof(Application<>));
             builder.Services.AddScoped(typeof(IDbContext<>), typeof(DbContext<>));
 
-
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            // ?? Middleware
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -48,10 +48,7 @@ namespace GestionCompeticiones.WebAPI
             }
 
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
-
-
             app.MapControllers();
 
             app.Run();

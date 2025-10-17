@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,11 +11,13 @@ namespace GestionCompeticiones.Application.Dtos.Piloto
     {
         public int Id { get; set; }
 
-        public int PilotoId { get; set; }
- 
-        public int EquipoId { get; set; }
+        public int UsuarioId { get; set; }
 
-        public DateTime FechaInicio { get; set; }
-        public DateTime? FechaFin { get; set; }
+        public string DNI { get; set; }
+        public DateTime FechaNacimiento { get; set; }
+        public string Nacionalidad { get; set; }
+        public string FotoPerfil { get; set; }
+
+        public int LicenciaNumero { get; set; }
     }
 }
