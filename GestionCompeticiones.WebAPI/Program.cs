@@ -14,12 +14,11 @@ namespace GestionCompeticiones.WebAPI
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // ?? Servicios base
+      
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
-            // ??? Configuración de DbContext
             builder.Services.AddDbContext<DbDataAccess>(options =>
             {
                 options.UseSqlServer(
@@ -29,10 +28,9 @@ namespace GestionCompeticiones.WebAPI
                 options.UseLazyLoadingProxies();
             });
 
-            // ?? Registro de AutoMapper
             builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            // ?? Registro de dependencias genéricas
+          
             builder.Services.AddScoped(typeof(IStringServices), typeof(StringServices));
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             builder.Services.AddScoped(typeof(IApplication<>), typeof(Application<>));
@@ -40,7 +38,6 @@ namespace GestionCompeticiones.WebAPI
 
             var app = builder.Build();
 
-            // ?? Middleware
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
