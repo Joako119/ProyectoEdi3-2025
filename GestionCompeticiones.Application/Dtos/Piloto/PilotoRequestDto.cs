@@ -1,4 +1,6 @@
-﻿using System;
+﻿using GestionCompeticiones.Entities;
+using GestionCompeticiones.Entities.MicrosoftIdentity;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -10,7 +12,7 @@ namespace GestionCompeticiones.Application.Dtos.Piloto
     public class PilotoRequestDto
     {
         public int Id { get; set; }
-        [ForeignKey(nameof(Usuario))]
+        [ForeignKey(nameof(User))]
         public int UsuarioId { get; set; }
 
         public string DNI { get; set; }

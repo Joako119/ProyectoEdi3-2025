@@ -2,75 +2,105 @@
 using GestionCompeticiones.Application;
 using GestionCompeticiones.Application.Dtos.Federacion;
 using GestionCompeticiones.Entities;
+using GestionCompeticiones.Entities.MicrosoftIdentity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionCompeticiones.WebAPI.Controllers
 {
+
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class FederacionController : ControllerBase
     {
+        private readonly UserManager<User> _userManager;
         private readonly ILogger<FederacionController> _logger;
-        private readonly IApplication<Federacion> _service;
+        private readonly IApplication<Federacion> _federacion;
         private readonly IMapper _mapper;
 
         public FederacionController(
             ILogger<FederacionController> logger,
-            IApplication<Federacion> service,
+            UserManager<User> userManager,
+            IApplication<Federacion> federacion,
             IMapper mapper)
         {
             _logger = logger;
-            _service = service;
+            _federacion = federacion;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         [HttpGet]
         [Route("All")]
         public async Task<IActionResult> All()
         {
-            return Ok(_mapper.Map<IList<FederacionResponseDto>>(_service.GetAll()));
+            var id = User.FindFirst("Id").Value.ToString();
+            var user = _userManager.FindByIdAsync(id).Result;
+            if (_userManager.IsInRoleAsync(user, "Administrador").Result)
+            {
+                var name = User.FindFirst("name");
+                var a = User.Claims;
+                return Ok(_mapper.Map<IList<FederacionResponseDto>>(_federacion.GetAll()));
+            }
+            return Unauthorized();
         }
 
         [HttpGet]
         [Route("ById")]
         public async Task<IActionResult> ById(int? Id)
         {
-            if (!Id.HasValue) return BadRequest();
-            Federacion entity = _service.GetById(Id.Value);
-            if (entity is null) return NotFound();
-            return Ok(_mapper.Map<FederacionResponseDto>(entity));
+            if (!Id.HasValue)
+            {
+                return BadRequest();
+            }
+            Federacion federacion = _federacion.GetById(Id.Value);
+            if (federacion is null)
+            {
+                return NotFound();
+            }
+            return Ok(_mapper.Map<FederacionResponseDto>(federacion));
         }
 
         [HttpPost]
-        public async Task<IActionResult> Crear(FederacionRequestDto requestDto)
+        public async Task<IActionResult> Crear(FederacionRequestDto federacionRequestDto)
         {
-            if (!ModelState.IsValid) return BadRequest();
-            var entity = _mapper.Map<Federacion>(requestDto);
-            _service.Save(entity);
-            return Ok(entity.Id);
+            if (!ModelState.IsValid)
+            { return BadRequest(); }
+            var federacion = _mapper.Map<Federacion>(federacionRequestDto);
+            _federacion.Save(federacion);
+            return Ok(federacion.Id);
         }
 
         [HttpPut]
-        public async Task<IActionResult> Editar(int? Id, FederacionRequestDto requestDto)
+        public async Task<IActionResult> Editar(int? Id, FederacionRequestDto federacionRequestDto)
         {
-            if (!Id.HasValue) return BadRequest();
-            if (!ModelState.IsValid) return BadRequest();
-            Federacion entityBack = _service.GetById(Id.Value);
-            if (entityBack is null) return NotFound();
-            entityBack = _mapper.Map<Federacion>(requestDto);
-            _service.Save(entityBack);
+            if (!Id.HasValue)
+            { return BadRequest(); }
+            if (!ModelState.IsValid)
+            { return BadRequest(); }
+            Federacion federacionBack = _federacion.GetById(Id.Value);
+            if (federacionBack is null)
+            { return NotFound(); }
+            federacionBack = _mapper.Map<Federacion>(federacionRequestDto);
+            _federacion.Save(federacionBack);
             return Ok();
         }
 
         [HttpDelete]
         public async Task<IActionResult> Borrar(int? Id)
         {
-            if (!Id.HasValue) return BadRequest();
-            if (!ModelState.IsValid) return BadRequest();
-            Federacion entityBack = _service.GetById(Id.Value);
-            if (entityBack is null) return NotFound();
-            _service.Delete(entityBack.Id);
+            if (!Id.HasValue)
+            { return BadRequest(); }
+            if (!ModelState.IsValid)
+            { return BadRequest(); }
+            Federacion federacionBack = _federacion.GetById(Id.Value);
+            if (federacionBack is null)
+            { return NotFound(); }
+            _federacion.Delete(federacionBack.Id);
             return Ok();
         }
     }

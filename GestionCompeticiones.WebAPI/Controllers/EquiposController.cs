@@ -2,27 +2,35 @@
 using GestionCompeticiones.Application;
 using GestionCompeticiones.Application.Dtos.Equipo;
 using GestionCompeticiones.Entities;
+using GestionCompeticiones.Entities.MicrosoftIdentity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionCompeticiones.WebAPI.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class EquipoController : ControllerBase
     {
+        private readonly UserManager<User> _userManager;
         private readonly ILogger<EquipoController> _logger;
         private readonly IApplication<Equipo> _service;
         private readonly IMapper _mapper;
 
         public EquipoController(
             ILogger<EquipoController> logger,
+             UserManager<User> userManager,
             IApplication<Equipo> service,
             IMapper mapper)
         {
             _logger = logger;
             _service = service;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         [HttpGet]

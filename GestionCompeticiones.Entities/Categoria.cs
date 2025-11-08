@@ -1,4 +1,5 @@
 ﻿using GestionCompeticiones.Abstractions;
+using GestionCompeticiones.Entities.MicrosoftIdentity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -21,8 +22,8 @@ namespace GestionCompeticiones.Entities
         public string Descripcion { get; set; }
 
         [ForeignKey(nameof(UsuarioResponsable))]
-        public int UsuarioResponsableId { get; set; }
-        public virtual Usuario UsuarioResponsable { get; set; }
+        public Guid  UsuarioResponsableId { get; set; }
+        public virtual User UsuarioResponsable { get; set; }
 
         public virtual ICollection<Campeonato> Campeonatos { get; set; }
     

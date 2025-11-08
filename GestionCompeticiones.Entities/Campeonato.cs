@@ -16,7 +16,7 @@ using System.ComponentModel.DataAnnotations.Schema;
             public int Id { get; set; }
 
             public string Nombre { get; set; }
-            public int Año { get; set; }
+           
             public string ReglasPuntaje { get; set; }
             public EstadoCampeonato Estado { get; set; }
 
@@ -28,9 +28,8 @@ using System.ComponentModel.DataAnnotations.Schema;
             public int FederacionId { get; set; }
             public virtual Federacion Federacion { get; set; }
 
-            [ForeignKey(nameof(UsuarioResponsable))]
             public int UsuarioResponsableId { get; set; }
-            public virtual Usuario UsuarioResponsable { get; set; }
+        
 
             public virtual ICollection<Carrera> Carreras { get; set; } 
             public virtual ICollection<Piloto> Pilotos { get; set; } 

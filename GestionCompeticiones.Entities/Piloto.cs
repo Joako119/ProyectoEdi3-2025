@@ -1,4 +1,5 @@
 ﻿using GestionCompeticiones.Abstractions;
+using GestionCompeticiones.Entities.MicrosoftIdentity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -22,8 +23,8 @@ namespace GestionCompeticiones.Entities
         public int Id { get; set; }
 
             [ForeignKey(nameof(Usuario))]
-            public int UsuarioId { get; set; } 
-            public virtual Usuario Usuario { get; set; } 
+            public Guid UsuarioId { get; set; } 
+            public virtual User Usuario { get; set; } 
 
             public string DNI { get; set; }
             public DateTime FechaNacimiento { get; set; }

@@ -2,81 +2,105 @@
 using GestionCompeticiones.Application;
 using GestionCompeticiones.Application.Dtos.Categoria;
 using GestionCompeticiones.Entities;
+using GestionCompeticiones.Entities.MicrosoftIdentity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestionCompeticiones.WebAPI.Controllers
 {
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [Route("api/[controller]")]
     [ApiController]
     public class CategoriasController : ControllerBase
     {
-        [Route("api/[controller]")]
-        [ApiController]
-        public class CategoriaController : ControllerBase
+        private readonly UserManager<User> _userManager;
+        private readonly ILogger<CategoriasController> _logger;
+        private readonly IApplication<Categoria> _categoria;
+        private readonly IMapper _mapper;
+
+        public CategoriasController(
+            ILogger<CategoriasController> logger,
+            UserManager<User> userManager,
+            IApplication<Categoria> categoria,
+            IMapper mapper)
         {
-            private readonly ILogger<CategoriaController> _logger;
-            private readonly IApplication<Categoria> _service;
-            private readonly IMapper _mapper;
+            _logger = logger;
+            _categoria = categoria;
+            _mapper = mapper;
+            _userManager = userManager;
+        }
 
-            public CategoriaController(
-                ILogger<CategoriaController> logger,
-                IApplication<Categoria> service,
-                IMapper mapper)
+        [HttpGet]
+        [Route("All")]
+        public async Task<IActionResult> All()
+        {
+            var id = User.FindFirst("Id").Value.ToString();
+            var user = _userManager.FindByIdAsync(id).Result;
+            if (_userManager.IsInRoleAsync(user, "Administrador").Result)
             {
-                _logger = logger;
-                _service = service;
-                _mapper = mapper;
+                var name = User.FindFirst("name");
+                var a = User.Claims;
+                return Ok(_mapper.Map<IList<CategoriaResponseDto>>(_categoria.GetAll()));
             }
+            return Unauthorized();
+        }
 
-            [HttpGet]
-            [Route("All")]
-            public async Task<IActionResult> All()
+        [HttpGet]
+        [Route("ById")]
+        public async Task<IActionResult> ById(int? Id)
+        {
+            if (!Id.HasValue)
             {
-                return Ok(_mapper.Map<IList<CategoriaResponseDto>>(_service.GetAll()));
+                return BadRequest();
             }
+            Categoria categoria = _categoria.GetById(Id.Value);
+            if (categoria is null)
+            {
+                return NotFound();
+            }
+            return Ok(_mapper.Map<CategoriaResponseDto>(categoria));
+        }
 
-            [HttpGet]
-            [Route("ById")]
-            public async Task<IActionResult> ById(int? Id)
-            {
-                if (!Id.HasValue) return BadRequest();
-                Categoria cat = _service.GetById(Id.Value);
-                if (cat is null) return NotFound();
-                return Ok(_mapper.Map<CategoriaResponseDto>(cat));
-            }
+        [HttpPost]
+        public async Task<IActionResult> Crear(CategoriaRequestDto categoriaRequestDto)
+        {
+            if (!ModelState.IsValid)
+            { return BadRequest(); }
+            var categoria = _mapper.Map<Categoria>(categoriaRequestDto);
+            _categoria.Save(categoria);
+            return Ok(categoria.Id);
+        }
 
-            [HttpPost]
-            public async Task<IActionResult> Crear(CategoriaRequestDto requestDto)
-            {
-                if (!ModelState.IsValid) return BadRequest();
-                var cat = _mapper.Map<Categoria>(requestDto);
-                _service.Save(cat);
-                return Ok(cat.Id);
-            }
+        [HttpPut]
+        public async Task<IActionResult> Editar(int? Id, CategoriaRequestDto categoriaRequestDto)
+        {
+            if (!Id.HasValue)
+            { return BadRequest(); }
+            if (!ModelState.IsValid)
+            { return BadRequest(); }
+            Categoria categoriaBack = _categoria.GetById(Id.Value);
+            if (categoriaBack is null)
+            { return NotFound(); }
+            categoriaBack = _mapper.Map<Categoria>(categoriaRequestDto);
+            _categoria.Save(categoriaBack);
+            return Ok();
+        }
 
-            [HttpPut]
-            public async Task<IActionResult> Editar(int? Id, CategoriaRequestDto requestDto)
-            {
-                if (!Id.HasValue) return BadRequest();
-                if (!ModelState.IsValid) return BadRequest();
-                Categoria catBack = _service.GetById(Id.Value);
-                if (catBack is null) return NotFound();
-                catBack = _mapper.Map<Categoria>(requestDto);
-                _service.Save(catBack);
-                return Ok();
-            }
-
-            [HttpDelete]
-            public async Task<IActionResult> Borrar(int? Id)
-            {
-                if (!Id.HasValue) return BadRequest();
-                if (!ModelState.IsValid) return BadRequest();
-                Categoria catBack = _service.GetById(Id.Value);
-                if (catBack is null) return NotFound();
-                _service.Delete(catBack.Id);
-                return Ok();
-            }
+        [HttpDelete]
+        public async Task<IActionResult> Borrar(int? Id)
+        {
+            if (!Id.HasValue)
+            { return BadRequest(); }
+            if (!ModelState.IsValid)
+            { return BadRequest(); }
+            Categoria categoriaBack = _categoria.GetById(Id.Value);
+            if (categoriaBack is null)
+            { return NotFound(); }
+            _categoria.Delete(categoriaBack.Id);
+            return Ok();
         }
     }
 }

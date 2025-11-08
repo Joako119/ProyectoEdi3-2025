@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GestionCompeticiones.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,11 @@ namespace GestionCompeticiones.Application.Dtos.Campeonato
 {
     public class CampeonatoRequestDto
     {
+        public int Id { get; set; }
+
+        public string Nombre { get; set; }
+
+        public string ReglasPuntaje { get; set; }
+        public EstadoCampeonato Estado { get; set; }
     }
 }
