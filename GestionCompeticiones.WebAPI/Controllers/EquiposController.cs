@@ -35,6 +35,7 @@ namespace GestionCompeticiones.WebAPI.Controllers
 
         [HttpGet]
         [Route("All")]
+        [Authorize(Roles = "AdministradorGeneral, AdministradorCategoria")]
         public async Task<IActionResult> All()
         {
             return Ok(_mapper.Map<IList<EquipoResponseDto>>(_service.GetAll()));
@@ -42,6 +43,7 @@ namespace GestionCompeticiones.WebAPI.Controllers
 
         [HttpGet]
         [Route("ById")]
+        [Authorize(Roles = "AdministradorGeneral, AdministradorCategoria")]
         public async Task<IActionResult> ById(int? Id)
         {
             if (!Id.HasValue) return BadRequest();
@@ -51,6 +53,8 @@ namespace GestionCompeticiones.WebAPI.Controllers
         }
 
         [HttpPost]
+        [Route("Crear")]
+        [Authorize(Roles = "AdministradorGeneral, AdministradorCategoria")]
         public async Task<IActionResult> Crear(EquipoRequestDto requestDto)
         {
             if (!ModelState.IsValid) return BadRequest();
@@ -60,6 +64,8 @@ namespace GestionCompeticiones.WebAPI.Controllers
         }
 
         [HttpPut]
+        [Route("Editar")]
+        [Authorize(Roles = "AdministradorGeneral, AdministradorCategoria")]
         public async Task<IActionResult> Editar(int? Id, EquipoRequestDto requestDto)
         {
             if (!Id.HasValue) return BadRequest();
@@ -72,6 +78,8 @@ namespace GestionCompeticiones.WebAPI.Controllers
         }
 
         [HttpDelete]
+        [Route("Borrar")]
+        [Authorize(Roles = "AdministradorGeneral, AdministradorCategoria")]
         public async Task<IActionResult> Borrar(int? Id)
         {
             if (!Id.HasValue) return BadRequest();

@@ -15,10 +15,10 @@ namespace GestionCompeticiones.WebAPI.Controllers.Identity
     public class RolesController : ControllerBase
     {
         private readonly RoleManager<Role> _roleManager;
-        private readonly ILogger<UsersController> _logger;
+        private readonly ILogger<RolesController> _logger;
         private readonly IMapper _mapper;
         public RolesController(RoleManager<Role> roleManager
-            , ILogger<UsersController> logger
+            , ILogger<RolesController> logger
             , IMapper mapper)
         {
             _roleManager = roleManager;
@@ -26,26 +26,29 @@ namespace GestionCompeticiones.WebAPI.Controllers.Identity
             _mapper = mapper;
         }
         /// <summary>
-        /// Obtiene una lista de todos los laboratorios por tipo
+        /// Obtiene una lista de todos los roles
         /// </summary>
-        /// <returns>Lista de Alimentos</returns>
+        /// <returns>Lista de Rols</returns>
         [HttpGet]
         [Route("GetAll")]
+        [Authorize(Roles = "AdministradorGeneral")]
         public async Task<IActionResult> GetAll()
         {
             return Ok(_mapper.Map<IList<RoleResponseDto>>(_roleManager.Roles.ToList()));
         }
 
         /// <summary>
-        /// Crea un alimento
+        /// Crea un rol
         /// </summary>
         /// <param name="{"></param>
         /// <returns></returns>
-        /// <response code="200">Alimento Creado</response>
-        /// <response code="400">Error al validar el alimento</response>
-        /// <response code="500">Oops! No se pudo crear el alimento</response>
+        /// <response code="200">Rol Creado</response>
+        /// <response code="400">Error al validar el Rol</response>
+        /// <response code="401">Permisos Invalidos. Comuniquese con el administrador</response>
+        /// <response code="500"> No se pudo crear el rol</response>
         [HttpPost]
         [Route("Create")]
+        [Authorize(Roles = "AdministradorGeneral")]
         public IActionResult Guardar(RoleRequestDto roleRequestDto)
         {
             if (ModelState.IsValid)
@@ -54,6 +57,7 @@ namespace GestionCompeticiones.WebAPI.Controllers.Identity
                 try
                 {
                     var role = _mapper.Map<Role>(roleRequestDto);
+                    role.Id = Guid.NewGuid();
                     var result = _roleManager.CreateAsync(role).Result;
                     if (result.Succeeded)
                     {

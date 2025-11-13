@@ -138,7 +138,7 @@ namespace GestionCompeticiones.WebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UsuarioResponsableId")
+                    b.Property<int>("anio")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -195,12 +195,12 @@ namespace GestionCompeticiones.WebAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("UsuarioResponsableId")
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UsuarioResponsableId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Categoria");
                 });
@@ -352,7 +352,6 @@ namespace GestionCompeticiones.WebAPI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -400,7 +399,6 @@ namespace GestionCompeticiones.WebAPI.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("UserName")
-                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
@@ -549,8 +547,7 @@ namespace GestionCompeticiones.WebAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UsuarioId")
-                        .IsUnique();
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Piloto");
                 });
@@ -820,13 +817,9 @@ namespace GestionCompeticiones.WebAPI.Migrations
 
             modelBuilder.Entity("GestionCompeticiones.Entities.Categoria", b =>
                 {
-                    b.HasOne("GestionCompeticiones.Entities.MicrosoftIdentity.User", "UsuarioResponsable")
+                    b.HasOne("GestionCompeticiones.Entities.MicrosoftIdentity.User", null)
                         .WithMany("CategoriasResponsables")
-                        .HasForeignKey("UsuarioResponsableId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("UsuarioResponsable");
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("GestionCompeticiones.Entities.EstadisticaPiloto", b =>
@@ -854,8 +847,8 @@ namespace GestionCompeticiones.WebAPI.Migrations
             modelBuilder.Entity("GestionCompeticiones.Entities.Piloto", b =>
                 {
                     b.HasOne("GestionCompeticiones.Entities.MicrosoftIdentity.User", "Usuario")
-                        .WithOne("Piloto")
-                        .HasForeignKey("GestionCompeticiones.Entities.Piloto", "UsuarioId")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1002,8 +995,6 @@ namespace GestionCompeticiones.WebAPI.Migrations
             modelBuilder.Entity("GestionCompeticiones.Entities.MicrosoftIdentity.User", b =>
                 {
                     b.Navigation("CategoriasResponsables");
-
-                    b.Navigation("Piloto");
                 });
 
             modelBuilder.Entity("GestionCompeticiones.Entities.PersonalFederacion", b =>

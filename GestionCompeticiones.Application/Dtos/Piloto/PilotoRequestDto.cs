@@ -13,7 +13,7 @@ namespace GestionCompeticiones.Application.Dtos.Piloto
     {
         public int Id { get; set; }
         [ForeignKey(nameof(User))]
-        public int UsuarioId { get; set; }
+        public Guid UsuarioId { get; set; }
 
         public string DNI { get; set; }
         public DateTime FechaNacimiento { get; set; }

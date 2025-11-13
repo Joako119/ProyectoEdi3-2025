@@ -11,16 +11,17 @@ using Microsoft.AspNetCore.Mvc;
 namespace GestionCompeticiones.WebAPI.Controllers.Identity
 {
 
+
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
         private readonly UserManager<User> _userManager;
-        private readonly ILogger<UsersController> _logger;
+        private readonly ILogger<AuthController> _logger;
         private readonly ITokenHandlerService _servicioToken;
         public AuthController(
             UserManager<User> userManager
-            , ILogger<UsersController> logger
+            , ILogger<AuthController> logger
             , ITokenHandlerService servicioToken)
         {
             _userManager = userManager;
@@ -30,6 +31,7 @@ namespace GestionCompeticiones.WebAPI.Controllers.Identity
 
         [HttpPost]
         [Route("Register")]
+        [AllowAnonymous]
         public async Task<IActionResult> RegistrarUsuario([FromBody] UserRequestDto user)
         {
             if (ModelState.IsValid)
@@ -111,6 +113,7 @@ namespace GestionCompeticiones.WebAPI.Controllers.Identity
 
         [HttpPost]
         [Route("login")]
+       
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginUserRequestDto userlogin)
         {
@@ -124,12 +127,14 @@ namespace GestionCompeticiones.WebAPI.Controllers.Identity
                     {
                         try
                         {
+                            var roles = await _userManager.GetRolesAsync(existeUsuario);
                             var parametros = new TokenParameters()
                             {
                                 Id = existeUsuario.Id.ToString(),
                                 PaswordHash = existeUsuario.PasswordHash,
                                 UserName = existeUsuario.UserName,
-                                Email = existeUsuario.Email
+                                Email = existeUsuario.Email,
+                                Roles = roles
                             };
                             var jwt = _servicioToken.GenerateJwtTokens(parametros);
                             return Ok(new LoginUserResponseDto()

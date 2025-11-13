@@ -2,12 +2,14 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace GestionCompeticiones.Entities.MicrosoftIdentity
 {
+
     public class User : IdentityUser<Guid>
     {
         public User()
@@ -27,10 +29,9 @@ namespace GestionCompeticiones.Entities.MicrosoftIdentity
 
         public DateTime FechaRegistro { get; set; }
 
-        public virtual Piloto? Piloto { get; set; }
+        //public virtual Piloto? Piloto { get; set; }
 
         public virtual ICollection<Categoria> CategoriasResponsables { get; set; }
-        public string Email { get; set; }
-        public string UserName { get; set; }
+        
     }
 }

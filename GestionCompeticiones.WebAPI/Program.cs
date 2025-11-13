@@ -23,8 +23,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "GestionCompeticiones.WebAPI", Version = "v1" });
-    //var filePath = Path.Combine(System.AppContext.BaseDirectory, "NutricionProfesional.WebApi.xml");
-    //c.IncludeXmlComments(filePath);
+
     var jwtSecurityScheme = new OpenApiSecurityScheme
     {
         BearerFormat = "JWT",
@@ -88,7 +87,7 @@ builder.Services.AddScoped(typeof(ITokenHandlerService), typeof(TokenHandlerServ
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

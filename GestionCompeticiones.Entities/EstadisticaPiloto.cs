@@ -11,13 +11,13 @@ namespace GestionCompeticiones.Entities
     public class EstadisticaPiloto : IEntidad
     {
         public EstadisticaPiloto() { }
-
+        #region properties
         public int Id { get; set; }
 
         [ForeignKey(nameof(Piloto))]
         public int PilotoId { get; set; }
 
-        public virtual Piloto Piloto { get; set; } 
+        public virtual Piloto Piloto { get; set; }
         public int Temporada { get; set; }
         public string Categoria { get; set; }
 
@@ -26,5 +26,8 @@ namespace GestionCompeticiones.Entities
         public int Podios { get; set; }
         public int Abandonos { get; set; }
         public double PuntajePromedio { get; set; }
+        #endregion
+
+    
     }
 }

@@ -35,11 +35,12 @@ namespace GestionCompeticiones.WebAPI.Controllers
 
         [HttpGet]
         [Route("All")]
+        [Authorize(Roles = "AdministradorGeneral, AdministradorCategoria")]
         public async Task<IActionResult> All()
         {
             var id = User.FindFirst("Id").Value.ToString();
             var user = _userManager.FindByIdAsync(id).Result;
-            if (_userManager.IsInRoleAsync(user, "Administrador").Result)
+            if (_userManager.IsInRoleAsync(user, "AdministradorGeneral, AdministradorCategoria, Usuario").Result)
             {
                 var name = User.FindFirst("name");
                 var a = User.Claims;
@@ -50,6 +51,7 @@ namespace GestionCompeticiones.WebAPI.Controllers
 
         [HttpGet]
         [Route("ById")]
+        [Authorize(Roles = "AdministradorGeneral, AdministradorCategoria")]
         public async Task<IActionResult> ById(int? Id)
         {
             if (!Id.HasValue)
@@ -65,6 +67,9 @@ namespace GestionCompeticiones.WebAPI.Controllers
         }
 
         [HttpPost]
+        [Route("Create")]
+       
+        [Authorize(Roles = "AdministradorGeneral, AdministradorCategoria")]
         public async Task<IActionResult> Crear(CategoriaRequestDto categoriaRequestDto)
         {
             if (!ModelState.IsValid)
@@ -74,7 +79,8 @@ namespace GestionCompeticiones.WebAPI.Controllers
             return Ok(categoria.Id);
         }
 
-        [HttpPut]
+        [HttpPut] [Route("Editar")]
+        [Authorize(Roles = "AdministradorGeneral, AdministradorCategoria")]
         public async Task<IActionResult> Editar(int? Id, CategoriaRequestDto categoriaRequestDto)
         {
             if (!Id.HasValue)
@@ -90,6 +96,8 @@ namespace GestionCompeticiones.WebAPI.Controllers
         }
 
         [HttpDelete]
+        [Route("Borrar")]
+        [Authorize(Roles = "AdministradorGeneral, AdministradorCategoria")]
         public async Task<IActionResult> Borrar(int? Id)
         {
             if (!Id.HasValue)

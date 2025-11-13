@@ -36,6 +36,7 @@ namespace GestionCompeticiones.WebAPI.Controllers
 
         [HttpGet]
         [Route("All")]
+        [Authorize(Roles = "AdministradorGeneral, AdministradorCategoria, Usuario")]
         public async Task<IActionResult> All()
         {
             var id = User.FindFirst("Id").Value.ToString();
@@ -51,6 +52,7 @@ namespace GestionCompeticiones.WebAPI.Controllers
 
         [HttpGet]
         [Route("ById")]
+        [Authorize(Roles = "AdministradorGeneral, AdministradorCategoria, Usuario")]
         public async Task<IActionResult> ById(int? Id)
         {
             if (!Id.HasValue)
@@ -66,16 +68,22 @@ namespace GestionCompeticiones.WebAPI.Controllers
         }
 
         [HttpPost]
+        [Route("Create")]
+        [Authorize(Roles = "AdministradorGeneral, AdministradorCategoria, Usuario")]
         public async Task<IActionResult> Crear(PilotoRequestDto pilotoRequestDto)
         {
             if (!ModelState.IsValid)
             { return BadRequest(); }
             var piloto = _mapper.Map<Piloto>(pilotoRequestDto);
+           piloto.Id = pilotoRequestDto.Id;
+
             _piloto.Save(piloto);
             return Ok(piloto.Id);
         }
 
         [HttpPut]
+        [Route("Editar")]
+        [Authorize(Roles = "AdministradorGeneral, AdministradorCategoria, Usuario")]
         public async Task<IActionResult> Editar(int? Id, PilotoRequestDto pilotoRequestDto)
         {
             if (!Id.HasValue)
@@ -91,6 +99,9 @@ namespace GestionCompeticiones.WebAPI.Controllers
         }
 
         [HttpDelete]
+
+        [Route("Borrar")]
+        [Authorize(Roles = "AdministradorGeneral, AdministradorCategoria, Usuario")]
         public async Task<IActionResult> Borrar(int? Id)
         {
             if (!Id.HasValue)
@@ -100,7 +111,7 @@ namespace GestionCompeticiones.WebAPI.Controllers
             Piloto pilotoBack = _piloto.GetById(Id.Value);
             if (pilotoBack is null)
             { return NotFound(); }
-            _piloto.Delete(pilotoBack.Id);
+            _piloto.Delete(Id.Value);
             return Ok();
         }
     }
