@@ -26,6 +26,7 @@ namespace GestionCompeticiones.WebAPI.Controllers.Identity
 
         [HttpPost]
         [Route("AddRoleToUser")]
+        [Authorize(Roles = "AdministradorGeneral")]
         public async Task<IActionResult> Guardar(string userId, string roleId)
         {
             var user = _userManager.FindByIdAsync(userId).Result;

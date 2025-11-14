@@ -42,32 +42,26 @@ namespace GestionCompeticiones.WebAPI.Controllers
             _federacion = federacion;
         }
 
-
-        [HttpGet][Route("All")]
-     
+        [HttpGet]
+        [Route("All")]
+        [Authorize(Roles = "AdministradorGeneral, AdministradorCategoria")]
         public async Task<IActionResult> All()
         {
-            try
-            {
-                var id = User.FindFirst("Id").Value.ToString();
-                var user = _userManager.FindByIdAsync(id).Result;
-                if (await _userManager.IsInRoleAsync(user, "Administrador") ||
-                    await _userManager.IsInRoleAsync(user, "AdministradorCategoria") ||
-                    await _userManager.IsInRoleAsync(user, "Ususario"))
+            
+                var id = User.FindFirst("Id")?.Value;
+                if (id == null)
+                    return Unauthorized();
 
-                {
-                    var name = User.FindFirst("name");
-                    var a = User.Claims; return Ok(_mapper.Map<IList<CampeonatoResponseDto>>(_campeonato.GetAll()));
-                }
-                return Unauthorized();
-            }
-            catch (Exception)
-            {
+                var user = await _userManager.FindByIdAsync(id);
 
-                throw new ArgumentException();
-            } }
+                // Ya con el atributo Authorize, no hace falta volver a chequear roles aquí
+                var campeonatos = _campeonato.GetAll(); // si tenés versión async, usá await _campeonato.GetAllAsync()
+                var response = _mapper.Map<IList<CampeonatoResponseDto>>(campeonatos);
 
-        [HttpGet]
+                return Ok(response);
+           
+        }
+            [HttpGet]
         [Route("ById")]
 
         [Authorize(Roles = "AdministradorGeneral")]

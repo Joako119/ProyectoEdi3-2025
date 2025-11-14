@@ -13,6 +13,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\GestionCompeticiones.Abstractions\GestionCompeticiones.Abstractions.csproj" />
+    <ProjectReference Include="..\GestionCompeticiones.Application\GestionCompeticiones.Application.csproj" />
+    <ProjectReference Include="..\GestionCompeticiones.Exceptions\GestionCompeticiones.Exceptions.csproj" />
+
   </ItemGroup>
 
 </Project>

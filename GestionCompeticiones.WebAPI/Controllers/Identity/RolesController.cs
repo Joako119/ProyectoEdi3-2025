@@ -25,10 +25,7 @@ namespace GestionCompeticiones.WebAPI.Controllers.Identity
             _logger = logger;
             _mapper = mapper;
         }
-        /// <summary>
-        /// Obtiene una lista de todos los roles
-        /// </summary>
-        /// <returns>Lista de Rols</returns>
+   
         [HttpGet]
         [Route("GetAll")]
         [Authorize(Roles = "AdministradorGeneral")]
@@ -37,15 +34,7 @@ namespace GestionCompeticiones.WebAPI.Controllers.Identity
             return Ok(_mapper.Map<IList<RoleResponseDto>>(_roleManager.Roles.ToList()));
         }
 
-        /// <summary>
-        /// Crea un rol
-        /// </summary>
-        /// <param name="{"></param>
-        /// <returns></returns>
-        /// <response code="200">Rol Creado</response>
-        /// <response code="400">Error al validar el Rol</response>
-        /// <response code="401">Permisos Invalidos. Comuniquese con el administrador</response>
-        /// <response code="500"> No se pudo crear el rol</response>
+  
         [HttpPost]
         [Route("Create")]
         [Authorize(Roles = "AdministradorGeneral")]
@@ -79,14 +68,13 @@ namespace GestionCompeticiones.WebAPI.Controllers.Identity
 
         [HttpPut]
         [Route("Update")]
+        [Authorize(Roles = "AdministradorGeneral")]
         public IActionResult Modificar([FromBody] RoleRequestDto roleRequestDto, [FromQuery] Guid id)/*Falta */
         {
             if (ModelState.IsValid)
             {
                 var userId = Guid.Parse(User.FindFirst("Id")?.Value);
-                try
-                {
-                    var role = _mapper.Map<Role>(roleRequestDto);
+                 var role = _mapper.Map<Role>(roleRequestDto);
                     role.Id = id;
                     var result = _roleManager.UpdateAsync(role).Result;
                     if (result.Succeeded)
@@ -94,11 +82,7 @@ namespace GestionCompeticiones.WebAPI.Controllers.Identity
                         return Ok(role.Id);
                     }
                     return Problem(detail: result.Errors.First().Description, instance: role.Name, statusCode: StatusCodes.Status409Conflict);
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
+              
             }
             else
             {
@@ -108,10 +92,10 @@ namespace GestionCompeticiones.WebAPI.Controllers.Identity
 
         [Route("GetById")]
         [HttpGet]
+        [Authorize(Roles = "AdministradorGeneral")]
         public IActionResult GetById(Guid? id)
         {
-            try
-            {
+            
                 if (!id.HasValue)
                 {
                     return BadRequest();
@@ -122,11 +106,8 @@ namespace GestionCompeticiones.WebAPI.Controllers.Identity
                     return NotFound();
                 }
                 return Ok(_mapper.Map<RoleResponseDto>(role));
-            }
-            catch (Exception ex)
-            {
-                return Conflict();
-            }
+           
+          
         }
     }
 }

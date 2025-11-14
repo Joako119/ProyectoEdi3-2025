@@ -38,15 +38,9 @@ namespace GestionCompeticiones.WebAPI.Controllers
         [Authorize(Roles = "AdministradorGeneral, AdministradorCategoria")]
         public async Task<IActionResult> All()
         {
-            var id = User.FindFirst("Id").Value.ToString();
-            var user = _userManager.FindByIdAsync(id).Result;
-            if (_userManager.IsInRoleAsync(user, "AdministradorGeneral, AdministradorCategoria, Usuario").Result)
-            {
-                var name = User.FindFirst("name");
-                var a = User.Claims;
+         
                 return Ok(_mapper.Map<IList<CategoriaResponseDto>>(_categoria.GetAll()));
-            }
-            return Unauthorized();
+         
         }
 
         [HttpGet]

@@ -10,7 +10,7 @@ namespace GestionCompeticiones.Application.Dtos.Campeonato
 {
     public class CampeonatoRequestDto
     {
-        public string Nombre { get; private set; }
+     
 
         public string ReglasPuntaje { get; set; }
         public EstadoCampeonato Estado { get; set; }
@@ -23,6 +23,5 @@ namespace GestionCompeticiones.Application.Dtos.Campeonato
 
         public int anio { get; set; }
 
-        public int UsuarioResponsableId { get; set; }
     }
 }

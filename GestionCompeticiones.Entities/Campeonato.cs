@@ -20,7 +20,7 @@ using System.ComponentModel.DataAnnotations.Schema;
         #region properties
         public int Id { get; set; }
 
-            public string Nombre { get; private set; }
+            public string Nombre { get;  set; }
            
             public string ReglasPuntaje { get; set; }
             public EstadoCampeonato Estado { get; set; }

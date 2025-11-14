@@ -21,17 +21,16 @@ namespace GestionCompeticiones.Entities
 
             [ForeignKey(nameof(Campeonato))]
             public int CampeonatoId { get; set; }
-            public virtual Campeonato Campeonato { get; set; } // virtual
+            public virtual Campeonato Campeonato { get; set; } 
 
             public string Nombre { get; set; }
             public DateTime Fecha { get; set; }
             public string Ubicacion { get; set; }
 
-            // Resultados de la carrera
-            public virtual ICollection<ResultadoCarrera> Resultados { get; set; } = new List<ResultadoCarrera>(); // virtual
 
-            // Lista de personas asignadas a la carrera (fiscales, veedores, administrativos, etc.)
-            public virtual ICollection<AsignacionPersonalFiscalCarrera> Fiscales { get; set; } = new List<AsignacionPersonalFiscalCarrera>(); // virtual
+            public virtual ICollection<ResultadoCarrera> Resultados { get; set; } = new List<ResultadoCarrera>(); 
+
+            public virtual ICollection<AsignacionPersonalFiscalCarrera> Fiscales { get; set; } = new List<AsignacionPersonalFiscalCarrera>(); 
         }
     }
 
