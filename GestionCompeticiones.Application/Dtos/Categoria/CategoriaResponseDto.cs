@@ -14,6 +14,6 @@ namespace GestionCompeticiones.Application.Dtos.Categoria
         public string Descripcion { get; set; }
 
     
-        public int UsuarioResponsableId { get; set; }
+       
     }
 }

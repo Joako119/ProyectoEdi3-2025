@@ -1,6 +1,8 @@
 ﻿using GestionCompeticiones.Abstractions;
+using GestionCompeticiones.DataAccess.MicrosoftIdentity;
 using GestionCompeticiones.Entities;
-
+using GestionCompeticiones.Entities.MicrosoftIdentity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -11,9 +13,12 @@ using System.Threading.Tasks;
 
 namespace GestionCompeticiones.DataAccess
 {
-    public class DbDataAccess : IdentityDbContext
-    {
-        public virtual DbSet<Usuario> Usuario { get; set; }
+  public class DbDataAccess : IdentityDbContext<User, Role, Guid>
+        {
+            public DbDataAccess(DbContextOptions<DbDataAccess> options) : base(options)
+            {
+            }
+            public virtual DbSet<User> User { get; set; }
         public virtual DbSet<TablaPosiciones> TablaPosiciones { get; set; }
         public virtual DbSet<ResultadoCarrera> ResultadoCarrera { get; set; }
         public virtual DbSet<PilotoEquipo> PilotoEquipo { get; set; }
@@ -26,8 +31,6 @@ namespace GestionCompeticiones.DataAccess
         public virtual DbSet<Carrera> Carrera { get; set; }
         public virtual DbSet<Campeonato> Campeonato { get; set; }
         public virtual DbSet<AsignacionPersonalFiscalCarrera> AsignacionPersonalFiscalCarrera { get; set; }
-
-        public DbDataAccess(DbContextOptions<DbDataAccess> options) : base(options) { }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -103,7 +106,7 @@ namespace GestionCompeticiones.DataAccess
                  .HasForeignKey(t => t.PilotoId)
                  .OnDelete(DeleteBehavior.Cascade);
             });
-            // EstadisticaPiloto -> Piloto
+         
             modelBuilder.Entity<EstadisticaPiloto>(b =>
             {
                 b.HasKey(ep => ep.Id);
@@ -113,7 +116,7 @@ namespace GestionCompeticiones.DataAccess
                  .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // PersonalFederacion -> Federacion
+        
             modelBuilder.Entity<PersonalFederacion>(b =>
             {
                 b.HasKey(pf => pf.Id);
@@ -123,7 +126,7 @@ namespace GestionCompeticiones.DataAccess
                  .OnDelete(DeleteBehavior.Cascade);
             });
 
-            // AsignacionPersonalFiscalCarrera -> PersonalFederacion, Carrera
+   
             modelBuilder.Entity<AsignacionPersonalFiscalCarrera>(b =>
             {
                 b.HasKey(a => a.Id);
