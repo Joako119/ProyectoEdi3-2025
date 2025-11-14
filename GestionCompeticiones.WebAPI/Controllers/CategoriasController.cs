@@ -35,7 +35,7 @@ namespace GestionCompeticiones.WebAPI.Controllers
 
         [HttpGet]
         [Route("All")]
-        [Authorize(Roles = "AdministradorGeneral, AdministradorCategoria")]
+        [Authorize(Roles = "AdministradorGeneral, AdministradorCategoria, Usuario, Piloto")]
         public async Task<IActionResult> All()
         {
          
@@ -45,7 +45,7 @@ namespace GestionCompeticiones.WebAPI.Controllers
 
         [HttpGet]
         [Route("ById")]
-        [Authorize(Roles = "AdministradorGeneral, AdministradorCategoria")]
+        [Authorize(Roles = "AdministradorGeneral, AdministradorCategoria, Usuario, Piloto")]
         public async Task<IActionResult> ById(int? Id)
         {
             if (!Id.HasValue)

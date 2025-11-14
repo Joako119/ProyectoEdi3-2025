@@ -35,7 +35,7 @@ namespace GestionCompeticiones.WebAPI.Controllers
 
         [HttpGet]
         [Route("All")]
-        [Authorize(Roles = "AdministradorGeneral, AdministradorCategoria")]
+        [Authorize(Roles = "AdministradorGeneral, AdministradorCategoria, Usuario, Piloto")]
         public async Task<IActionResult> All()
         {
             return Ok(_mapper.Map<IList<EquipoResponseDto>>(_service.GetAll()));
@@ -43,7 +43,7 @@ namespace GestionCompeticiones.WebAPI.Controllers
 
         [HttpGet]
         [Route("ById")]
-        [Authorize(Roles = "AdministradorGeneral, AdministradorCategoria")]
+        [Authorize(Roles = "AdministradorGeneral, AdministradorCategoria, Usuario, Piloto")]
         public async Task<IActionResult> ById(int? Id)
         {
             if (!Id.HasValue) return BadRequest();
